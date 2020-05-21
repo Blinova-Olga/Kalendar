@@ -1,0 +1,6 @@
+﻿  Case.cpp
+C:\Users\stude\source\repos\Kalendar_Console\Kalendar_Console\Case.cpp(98,21): warning C4018: <=: несоответствие типов со знаком и без знака
+  Source.cpp
+C:\Users\stude\source\repos\Kalendar_Console\Kalendar_Console\Source.cpp(72,28): warning C4244: =: преобразование "time_t" в "int", возможна потеря данных
+  Создание кода...
+  Kalendar_Console.vcxproj -> C:\Users\stude\source\repos\Kalendar_Console\Debug\Kalendar_Console.exe
