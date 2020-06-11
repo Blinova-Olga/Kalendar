@@ -1,17 +1,17 @@
 #include "Header.h"
 
-void Case::Write(ofstream& f) { // Запись в конец файла
+void Case::Write(ofstream& f) { // Запись в конец файла (when during repeat done doneTime priority name)
     f << mktime(&when) << ' ';
-    f << done << ' ';
+    f << during << ' ';
     f << mktime(&repeat) << ' ';
+    f << done << ' ';
+    f << mktime(&doneTime) << ' ';
     f << priority << ' ';
     f << name;
 }
 
 void Case::Ask() {
-    cout << "Создание новой задачи!" << endl;
     cout << "Имя: ";
-    cin.get();
     getline(cin, name);
     cout<<"Приоритет (0 - низкий, 1 - средний, 2 - высокий): ";
     if (cin >> priority) {
@@ -25,7 +25,7 @@ void Case::Ask() {
         cin.clear();
     }
 
-    cout<<"Время ( час мин ). Чтобы не вводить излишнюю информацию, используйте \"-\": "<<endl;
+    cout<<"Время начала ( час мин ). Чтобы не вводить излишнюю информацию, используйте \"-\": "<<endl;
     int p=0;
     if (cin >> p) { 
         if (p <= 23 && p >= 0) when.tm_hour = p;
@@ -58,6 +58,23 @@ void Case::Ask() {
         else cout << "Год >= 1900" << endl;
     }
     else cin.clear();
+    p = 0;
+
+    cout << "Длительность ( дней часов минут ): " << endl;
+    int u=0;
+    if (cin >> p) {
+         u = p*86400;
+    }
+    else cin.clear();
+    if (cin >> p) {
+        u = u + p * 3600;
+    }
+    else cin.clear();
+    if (cin >> p) {
+        u = u + p * 60;
+    }
+    else cin.clear();
+    if (u != 0) during = u;
     p = 0;
 
 
@@ -93,13 +110,59 @@ void Case::Ask() {
     cout << "Готово!" << endl;
 } 
 
-void Case::Print(int k) {
-    if (name.size() <= MAX_NAME_SIZE-k) {
+void Case::PrintName() {
+    if (name.size() <= MAX_NAME_SIZE) {
         cout.setf(ios::left);
-        cout << setfill('-') << setw(MAX_NAME_SIZE-k) << name << " ; ";
+        cout << setfill('-') << setw(MAX_NAME_SIZE) << name << " ; ";
         cout.unsetf(ios::left);
     }
     else cout << name << " ; "; //Вывод имени
+}
+
+void Case::PrintTime(char sw) {
+    int k=0;
+    switch (sw)
+    {
+    case 'm': // 23.05
+        cout << setfill('0') << setw(2) << when.tm_mday << ".";
+        cout << setfill('0') << setw(2) << when.tm_mon+1 << " ";
+        k += 6;
+    case 'w': // Пн
+        cout << weekday(when.tm_wday) << " ";
+        k += 3;
+    case 'h': // 12:00
+        cout << setfill('0') << setw(2) << when.tm_hour << ":";
+        cout << setfill('0') << setw(2) << when.tm_min << " ";
+        k += 6;
+        break;
+    case 'y': // 31.01.2022
+        cout << setfill('0') << setw(2) << when.tm_mday << ".";
+        cout << setfill('0') << setw(2) << when.tm_mon + 1 << ".";
+        cout << setfill('0') << setw(2) << when.tm_year + 1900 << " ";
+        k = 11;
+        break;
+    default:
+        break;
+    } 
+    cout << setfill(' ') << setw((int)15-k) <<"";
+}
+void Case::PrintDuring() {
+    int d = mktime(&when)+during-(time(NULL)/(int)60)*(int)60;
+    cout << "Осталось: ";
+    if (d >= 86400) {
+        cout << d / 86400 << " д. ";
+        d = d % 86400;
+    }
+    if (d >= 3600) {
+        cout << d / 3600 << " ч. ";
+        d = d % 3600;
+    }
+    if (d >= 60) {
+        cout << d / 60 << " мин. ";
+    }
+}
+
+void Case::Print() {
     switch (priority)
     {
     case 0:
